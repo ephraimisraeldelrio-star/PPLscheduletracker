@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panukz Premier League</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c27;
+    --border: rgba(255,255,255,0.07);
+    --accent: #c8f135;
+    --accent2: #7c5cfc;
+    --text: #f0f0f5;
+    --muted: #6b6b80;
+    --card-radius: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* --- Hero Header --- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 3rem 2rem 2.5rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(124,92,252,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 30%;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(200,241,53,0.09) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; max-width: 900px; margin: 0 auto; }
+  .league-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(200,241,53,0.1);
+    border: 1px solid rgba(200,241,53,0.25);
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    letter-spacing: 0.03em;
+    line-height: 0.9;
+    color: var(--text);
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-meta {
+    margin-top: 1rem;
+    font-size: 14px;
+    color: var(--muted);
+    display: flex; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .hero-meta strong { color: var(--text); font-weight: 500; }
+
+  /* --- Stats Row --- */
+  .stats {
+    max-width: 900px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat {
+    background: var(--surface);
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+  }
+  .stat .val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+  /* --- Main Content --- */
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* --- Filter Bar --- */
+  .filter-section { margin-bottom: 2rem; }
+  .filter-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 10px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; }
+  .filter-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: rgba(255,255,255,0.18); color: var(--text); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #0a0a0f; font-weight: 600; }
+
+  /* --- Day Groups --- */
+  .day-group { margin-bottom: 2rem; }
+  .day-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 10px;
+  }
+  .day-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .day-count {
+    font-size: 11px;
+    color: var(--muted);
+    background: var(--surface2);
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+  }
+  .day-line { flex: 1; height: 1px; background: var(--border); }
+
+  /* --- Match Cards --- */
+  .match-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    margin-bottom: 8px;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: default;
+  }
+  .match-card:hover { border-color: rgba(255,255,255,0.15); background: var(--surface2); }
+  .match-card.highlight { border-color: rgba(200,241,53,0.3); }
+  .match-card.highlight .time-pill { background: rgba(200,241,53,0.15); color: var(--accent); border-color: rgba(200,241,53,0.3); }
+
+  .time-pill {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    padding: 5px 12px;
+    border-radius: 999px;
+    min-width: 76px;
+    text-align: center;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .teams { flex: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .team-tag {
+    display: inline-flex; align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+  }
+  .team-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .vs-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Team colors */
+  .t-dg  { background: rgba(228,77,77,0.12); color: #f08080; --dot: #e44d4d; }
+  .t-lpc { background: rgba(55,138,221,0.12); color: #6fb3f0; --dot: #378add; }
+  .t-pc  { background: rgba(212,83,126,0.12); color: #e890b2; --dot: #d4537e; }
+  .t-ggg { background: rgba(99,153,34,0.12); color: #9ccc50; --dot: #639922; }
+  .t-stz { background: rgba(186,117,23,0.12); color: #efb952; --dot: #ba7517; }
+  .t-pp  { background: rgba(29,158,117,0.12); color: #5ecfaa; --dot: #1d9e75; }
+  .t-nfx { background: rgba(226,75,74,0.12); color: #e88180; --dot: #e24b4a; }
+  .t-mtn { background: rgba(127,119,221,0.12); color: #b0acec; --dot: #7f77dd; }
+
+  /* --- Empty state --- */
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--muted); font-size: 15px; }
+  .empty span { display: block; font-size: 2rem; margin-bottom: 8px; }
+
+  /* --- Scrollbar --- */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 3px; }
+
+  /* Responsive */
+  @media (max-width: 560px) {
+    .hero { padding: 2rem 1.2rem 1.8rem; }
+    .stat .val { font-size: 2rem; }
+    .teams { gap: 6px; }
+    .team-tag { font-size: 12px; padding: 4px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="league-badge">Official Schedule</div>
+    <h1>Panukz<br><span>Premier</span> League</h1>
+    <div class="hero-meta">
+      <div><strong id="date-range">April 20 – 30, 2025</strong></div>
+      <div><strong>8</strong> Teams</div>
+      <div><strong>10</strong> Match Days</div>
+    </div>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="val" id="stat-total">30</div><div class="lbl">Matches</div></div>
+  <div class="stat"><div class="val" id="stat-days">10</div><div class="lbl">Match Days</div></div>
+  <div class="stat"><div class="val" id="stat-teams">8</div><div class="lbl">Teams</div></div>
+</div>
+
+<div class="main">
+  <div class="filter-section">
+    <div class="filter-label">Filter by team</div>
+    <div class="filters" id="filters"></div>
+  </div>
+  <div id="schedule"></div>
+</div>
+
+<script>
+const TEAMS = ["All","Devil Guardians","LPC Boys","Pride Chicken","GGG","Setzu","Puro Players","Netflix","Moon-tanga"];
+
+const TEAM_CLASS = {
+  "Devil Guardians": "t-dg",
+  "LPC Boys": "t-lpc",
+  "Pride Chicken": "t-pc",
+  "GGG": "t-ggg",
+  "Setzu": "t-stz",
+  "Puro Players": "t-pp",
+  "Netflix": "t-nfx",
+  "Moon-tanga": "t-mtn",
+};
+
+const SCHEDULE = [
+  {date:"April 20, Sunday", matches:[{t:"6:30 PM",a:"Devil Guardians",b:"LPC Boys"},{t:"7:30 PM",a:"Pride Chicken",b:"GGG"},{t:"8:30 PM",a:"Setzu",b:"Puro Players"}]},
+  {date:"April 21, Monday", matches:[{t:"6:30 PM",a:"LPC Boys",b:"Netflix"},{t:"7:30 PM",a:"Devil Guardians",b:"Pride Chicken"},{t:"8:30 PM",a:"Setzu",b:"GGG"}]},
+  {date:"April 22, Tuesday", matches:[{t:"6:30 PM",a:"Devil Guardians",b:"Netflix"},{t:"7:30 PM",a:"Pride Chicken",b:"Setzu"},{t:"8:30 PM",a:"Moon-tanga",b:"GGG"}]},
+  {date:"April 23, Wednesday", matches:[{t:"6:30 PM",a:"Devil Guardians",b:"Setzu"},{t:"7:30 PM",a:"LPC Boys",b:"Puro Players"},{t:"8:30 PM",a:"Moon-tanga",b:"Pride Chicken"}]},
+  {date:"April 25, Friday", matches:[{t:"6:30 PM",a:"Devil Guardians",b:"Puro Players"},{t:"7:30 PM",a:"Netflix",b:"GGG"},{t:"8:30 PM",a:"LPC Boys",b:"Moon-tanga"}]},
+  {date:"April 26, Saturday", matches:[{t:"6:30 PM",a:"Netflix",b:"Moon-tanga"},{t:"7:30–8:30",a:"LPC Boys",b:"Pride Chicken"}]},
+  {date:"April 27, Sunday", matches:[{t:"6:30 PM",a:"Devil Guardians",b:"Moon-tanga"},{t:"7:30 PM",a:"Puro Players",b:"GGG"},{t:"8:30 PM",a:"Pride Chicken",b:"Netflix"}]},
+  {date:"April 28, Monday", matches:[{t:"6:30 PM",a:"Setzu",b:"Moon-tanga"},{t:"7:30 PM",a:"Devil Guardians",b:"GGG"},{t:"8:30 PM",a:"Pride Chicken",b:"Puro Players"}]},
+  {date:"April 29, Tuesday", matches:[{t:"6:30 PM",a:"Netflix",b:"Setzu"},{t:"7:30 PM",a:"Puro Players",b:"Moon-tanga"},{t:"8:30 PM",a:"LPC Boys",b:"GGG"}]},
+  {date:"April 30, Wednesday", matches:[{t:"6:30 PM",a:"LPC Boys",b:"Setzu"},{t:"7:30 PM",a:"Netflix",b:"Puro Players"}]},
+];
+
+let active = "All";
+
+function teamTag(name) {
+  const cls = TEAM_CLASS[name] || "";
+  return `<span class="team-tag ${cls}"><span class="team-dot" style="background:var(--dot)"></span>${name}</span>`;
+}
+
+function render() {
+  const container = document.getElementById("schedule");
+  let html = "";
+  let totalMatches = 0, totalDays = 0;
+
+  SCHEDULE.forEach(day => {
+    const filtered = day.matches.filter(m => active === "All" || m.a === active || m.b === active);
+    if (!filtered.length) return;
+    totalMatches += filtered.length;
+    totalDays++;
+    html += `<div class="day-group">
+      <div class="day-header">
+        <div class="day-name">${day.date}</div>
+        <div class="day-count">${filtered.length} match${filtered.length > 1 ? "es" : ""}</div>
+        <div class="day-line"></div>
+      </div>`;
+    filtered.forEach(m => {
+      const hl = active !== "All" ? " highlight" : "";
+      html += `<div class="match-card${hl}">
+        <div class="time-pill">${m.t}</div>
+        <div class="teams">
+          ${teamTag(m.a)}
+          <span class="vs-badge">VS</span>
+          ${teamTag(m.b)}
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+
+  if (!totalMatches) {
+    html = `<div class="empty"><span>🏟</span>No matches found for this team.</div>`;
+  }
+
+  container.innerHTML = html;
+  document.getElementById("stat-total").textContent = totalMatches;
+  document.getElementById("stat-days").textContent = totalDays;
+  document.getElementById("stat-teams").textContent = active === "All" ? 8 : 1;
+}
+
+function buildFilters() {
+  const el = document.getElementById("filters");
+  TEAMS.forEach(t => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (t === "All" ? " active" : "");
+    btn.textContent = t;
+    btn.onclick = () => {
+      active = t;
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      render();
+    };
+    el.appendChild(btn);
+  });
+}
+
+buildFilters();
+render();
+</script>
+</body>
+</html>
